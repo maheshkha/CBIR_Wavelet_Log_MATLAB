@@ -1,0 +1,73 @@
+
+% l1=[1 2 3 4 5];
+% l2=[2 1 4 3 5];
+% l3=[3 4 5 2 1];
+% l4=[4 1 5 2 3];
+% l5=[5 2 3 4 1];
+
+    
+  % final log output
+  t1_log=log(l1);
+  t2_log=log(l2);
+  t3_log=log(l3);
+  t4_log=log(l4);
+  t5_log=log(l5);
+  
+  t1_s=sort(t1_log);
+  t2_s=sort(t2_log);
+  t3_s=sort(t3_log);
+  t4_s=sort(t4_log);
+  t5_s=sort(t5_log);
+  t1_s1=sort(l1);
+  t2_s1=sort(l2);
+  t3_s1=sort(l3);
+  t4_s1=sort(l4);
+  t5_s1=sort(l5);
+
+  a=[t1_s;t2_s;t3_s;t4_s;t5_s];
+  a1=[t1_s1;t2_s1;t3_s1;t4_s1;t5_s1];
+%   a=[t1_s;t2_s;t3_s;t1_s;t2_s;t3_s];%;t1_s;t2_s;t3_s;t1_s;t2_s;t3_s];
+  cnt=1;
+  [m n]=size(a);
+  len=m;
+  flag_cnt=[];
+for i=1:len-1
+    for j=1:n
+        if a(i,j)==a(i+1,j)
+           flag_cnt(cnt)=a(i,j);
+           flag_id(cnt)=a1(i,j);
+           cnt=cnt+1
+        end
+    end
+end
+
+  final_cnt = sort(flag_cnt);
+  flag_id = sort(flag_id);
+  [m n]=size(final_cnt);
+  cnt=1;
+  f_id=[];
+for i=1:n-1
+    if final_cnt(i)~=final_cnt(i+1)       
+        f_sort(cnt)=final_cnt(i);
+        f_id(cnt)=flag_id(i);
+        cnt=cnt+1;
+    end
+end
+% f_sort
+f_id
+%   % log relevance result
+%   cnt=1;
+%   cnt1=1;
+%   cnt2=1;
+%   for i3=1:20
+%       for i2=1:20     
+%           if t1_s(i3)==t2_s(i2) 
+%               f_list(cnt)=l1(i2);
+%               cnt=cnt+1;              
+%           end
+%           if t1_s(i3)==t3_s(i2) 
+%               f_list1(cnt1)=l3(i2);
+%               cnt1=cnt1+1;              
+%           end
+%       end
+%   end

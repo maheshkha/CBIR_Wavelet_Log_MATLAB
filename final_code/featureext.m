@@ -1,0 +1,815 @@
+function varargout = featureext(varargin)
+% FEATUREEXT M-file for featureext.fig
+%      FEATUREEXT, by itself, creates a new FEATUREEXT or raises the existing
+%      singleton*.
+%
+%      H = FEATUREEXT returns the handle to a new FEATUREEXT or the handle to
+%      the existing singleton*.
+%
+%      FEATUREEXT('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in FEATUREEXT.M with the given input arguments.
+%
+%      FEATUREEXT('Property','Value',...) creates a new FEATUREEXT or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before featureext_OpeningFunction gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to featureext_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Copyright 2002-2003 The MathWorks, Inc.
+
+% Edit the above text to modify the response to help featureext
+
+% Last Modified by GUIDE v2.5 04-Sep-2011 10:45:58
+
+% Begin initialization code - DO NOT EDIT
+
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @featureext_OpeningFcn, ...
+                   'gui_OutputFcn',  @featureext_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before featureext is made visible.
+function featureext_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to featureext (see VARARGIN)
+
+% Choose default command line output for featureext
+handles.output = hObject;
+% fh = figure;
+% ah = axes('Parent',fh,'units','pixels','Posit',[120 30 170 170]);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes featureext wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = featureext_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% % --- Executes on button press in pushbutton1.
+% function pushbutton1_Callback(hObject, eventdata, handles)
+% % hObject    handle to pushbutton1 (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% page1;
+global in_img6;
+global cnt_m;
+cnt_m =0;
+
+in_img6 = imread('1.jpg'); % read the image
+axes(handles.axes2);
+subimage(in_img6);
+axis off;
+title('Original Image');
+set(handles.axes1, 'Visible', 'off');
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global in_img6;
+global x;
+[fn,pn] = uigetfile('*.jpg','The file name should have jpg extension.');
+in_img6 = imread([pn,fn]); % read the image
+% if size(in_img6)>2
+%     x=rgb2gray(in_img6);
+% else
+    x=in_img6;
+% end
+
+% in_img6 = imread('peppers.png'); % read the image
+axes(handles.axes2);
+subimage(in_img6);
+axis off;
+title('Query Image');
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+close Color_Base;
+close all
+% mainpage;
+page1;
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% x = imread('peppers.png'); % read the image
+% x=rgb2gray(x);
+global x;
+global B;
+global IX;
+global B_ref;
+global IX_ref;
+global l1;
+global l2;
+global l3;
+global l4;
+global l5;
+global i11;
+global n;
+global l;
+global selection;
+global cnt_m;
+
+disp('Image Retrieval');
+
+
+% load color_feature;
+load color_feature_svm_rbf;
+    for ii=1:200
+        for jj=1:197
+            MASTER_DATA(jj,ii)=H_100_DATA(jj,ii);
+        end
+    end
+
+% This routine gives feature for Querry image.
+
+%   filename=input('Enter the Query Image name : ','s');
+  i=x;%imread(filename);
+  ref_i=i;  
+  subplot(5,5,[1:5]);
+  imshow(i);title('QUERY IMAGE');
+  [m,n]=size(i(:,:,1));
+  
+ % RGB to HSV conversion
+    i=rgb2hsv(i);
+    [counts1,x1]=imhist(i(:,:,1),64); 
+    [counts2,x2]=imhist(i(:,:,2),64); 
+    [counts3,x3]=imhist(i(:,:,3),64); 
+
+%     querry_feature=[(counts1)./(m*n) ;counts2./(m*n); counts3./(m*n)];
+    i1=rgb2gray(i);
+    iedge = edge(i1,'canny');
+    [ca cd ch cv] = dwt2(i1,'haar');
+    fet_edge = sum(sum(iedge));
+    fet_ca = sum(sum(ca));
+    fet_cd = sum(sum(cd));
+    fet_cv = sum(sum(cv));
+    fet_ch = sum(sum(ch));
+    
+    
+    querry_feature=[counts1 ;counts2; counts3;fet_edge;fet_ca;fet_cd;fet_cv;fet_ch];
+    
+%     querry_feature=[counts1 ;counts2; counts3];
+
+ %This routine convert the querry_feature into 192x100 size
+ %for easy & fast subtraction from MASTER_DATA array
+    for jj=1:200 %  100  database image
+        for ii=1:197 %192=64 for red+64 for green+64 for blue
+             querry_featu_100(ii,jj)=(querry_feature(ii,1));
+        end
+    end
+  
+%This code subtact the querry_featu_100 from MASTER_DATA
+ %   SUB_RESULT =((abs(querry_featu_100 -   MASTER_DATA)/(1+querry_featu_100 + MASTER_DATA)));
+    for ii=1:200
+        E=0;
+        for jj=1:197
+            % Euclidean distance
+                E = E + (querry_featu_100(jj,ii)-MASTER_DATA(jj,ii))^2;
+        end
+         final1(ii) = sqrt(E);
+    end
+
+    [B,IX] = sort(final1);
+    if cnt_m ==0
+        B_ref=B(1:20);
+        IX_ref=IX(1:20);
+        cnt_m=cnt_m+1;
+    end
+    
+        display(IX);
+        display(B);
+    for ii=1:200
+        % Classify the test set using svmclassify
+        classes(ii) = svmclassify(svmStruct,querry_featu_100(:,ii)');
+    end
+%     [B,IX] = sort(classes);
+%         display(IX);
+%         display(B);
+        
+%  ------------------------------------This code gives top  similar images 
+temp=100.0;
+ii=1;
+ij=1;
+fignum=1;
+count=0;
+while(temp >=97.0 && ii<=20)
+%         temp=100-(B(ii);
+          temp=100-(B(ii)/10000);
+%         temp=((100*(1.0e+004))-(B(ii)));
+          ii = ii +1;
+          count=count+1;
+   end
+   totalfignum = ceil(count/25);
+   xx=1;
+   ii=1;
+   while(xx <= totalfignum)
+       while(ij<=20 && ii<=count)
+        name=strcat(int2str(IX(ii)),'.jpg');
+        figure(fignum),subplot(5,5,ij+5)
+        imshow(name);
+%       temp=100-(B(ii)-B(1));
+       % temp=(100*(1.0e+004))-(B(ii)-B(1));
+%          title(['Dist= ',num2str(B(ii)/10000),'  Ind= ',num2str(IX(ii))],'Color','B')
+         title(['Ind= ',num2str(IX(ii))],'Color','B')
+%         display(ii);
+        ij=ij+1;
+        ii=ii+1;
+       end
+       ij=1;
+       fignum=fignum+1;
+       xx=xx+1;
+   end
+
+   % for relevance logic for user input log based
+   clc
+   disp('Select the index for log relevance')
+     if i1 ==1
+        disp(IX(1:15))
+     end   
+      i11=1;
+     l=[];
+     while 1
+%     value=input('Enter Relevant image from (Y/N): ','s');
+selection = questdlg(['Log Feedback ' get(handles.figure1,'Name') '?'],...
+                     ['Log Feedback ' get(handles.figure1,'Name') '...'],...
+                     'Yes','No','Yes');
+if strcmp(selection,'Yes')
+    
+% for i11=1:5 % for 3 time log iteration loop for sorting images
+%     in2=input('Enter Relevant image from graph its index : ')
+%       i=imread([num2str(in2) '.jpg']);
+    [fn,pn] = uigetfile('*.jpg','The file name should have jpg extension.');
+    i = imread([pn,fn]); % read the image
+
+      fignum=i11+1;
+        figure(fignum)
+        subplot(5,5,[1:5]);
+  imshow(i);title('QUERY IMAGE');
+  [m,n]=size(i(:,:,1));
+  
+ % RGB to HSV conversion
+  i=rgb2hsv(i);
+    [counts1,x1]=imhist(i(:,:,1),64); 
+    [counts2,x2]=imhist(i(:,:,2),64); 
+    [counts3,x3]=imhist(i(:,:,3),64); 
+
+%     querry_feature=[(counts1)./(m*n) ;counts2./(m*n); counts3./(m*n)];
+ i1=rgb2gray(i);
+    iedge = edge(i1,'canny');
+    [ca cd ch cv] = dwt2(i1,'haar');
+    fet_edge = sum(sum(iedge));
+    fet_ca = sum(sum(ca));
+    fet_cd = sum(sum(cd));
+    fet_cv = sum(sum(cv));
+    fet_ch = sum(sum(ch));
+    
+    
+    querry_feature=[counts1 ;counts2; counts3;fet_edge;fet_ca;fet_cd;fet_cv;fet_ch];
+    
+%     querry_feature=[counts1 ;counts2; counts3];
+
+ %This routine convert the querry_feature into 192x100 size
+ %for easy & fast subtraction from MASTER_DATA array
+    for jj=1:200 %  100  database image
+        for ii=1:197 %192=64 for red+64 for green+64 for blue
+             querry_featu_100(ii,jj)=(querry_feature(ii,1));
+        end
+    end
+
+    for ii=1:200
+        E=0;
+        for jj=1:197
+            % Euclidean distance
+                E = E + (querry_featu_100(jj,ii)-MASTER_DATA(jj,ii))^2;
+        end
+         final1(ii) = sqrt(E);
+    end
+%[B,IX] = sort(final1);
+  % elseif i11==2
+    %   disp(IX(1:20))
+    %   B1=B(1:20);
+    %   IX1 = IX(1:20);        
+    %   l2=IX1;
+    %   cnt_disp=20;
+   % elseif i11==3
+   %   disp(IX(1:20))
+     %  B1=B(1:20);
+     %  IX1 = IX(1:20);        
+      % l3=IX1;
+      % cnt_disp=20;
+    %elseif i11==4
+    %   disp(IX(1:20))
+     %  B1=B(1:20);
+    %   IX1 = IX(1:20);        
+      % l4=IX1;
+      % cnt_disp=20;
+   % else
+    %   disp(IX(1:20))
+    %   B1=B(1:20);
+    %   IX1 = IX(1:20);        
+    %   l5=IX1;
+    %   cnt_disp=20;
+    %end      
+   [B,IX] = sort(final1);
+       B1=B(1:20);
+       IX1 = IX(1:20);
+       l(i11,:)=IX1;
+       cnt_disp=20;
+%     h=msgbox('String','Title','custom',IX1,hot(64))
+    set(handles.edit2,'String',num2str(IX1));
+
+   if i11 ==1
+       disp(IX(1:20))
+       B1=B(1:20);
+       IX1 = IX(1:20);
+       l1=IX1;
+       cnt_disp=20;
+    elseif i11==2
+       disp(IX(1:20))
+       B1=B(1:20);
+       IX1 = IX(1:20);        
+       l2=IX1;
+       cnt_disp=20;
+    elseif i11==3
+       disp(IX(1:20))
+       B1=B(1:20);
+       IX1 = IX(1:20);        
+       l3=IX1;
+       cnt_disp=20;
+    elseif i11==4
+       disp(IX(1:20))
+       B1=B(1:20);
+       IX1 = IX(1:20);        
+       l4=IX1;
+       cnt_disp=20;
+    else
+       disp(IX(1:20))
+       B1=B(1:20);
+       IX1 = IX(1:20);        
+       l5=IX1;
+       cnt_disp=20;
+   end   
+    save log_values l
+%         E=0;
+%         for jj=1:197
+%             % Euclidean distance
+%                 E = E + (querry_featu_100(jj,in2)-MASTER_DATA(jj,in2))^2;
+%         end
+%          final1 = sqrt(E);      
+         
+%  ------------------------------------This code gives top  similar images 
+temp=100.0;
+ii=1;
+ij=1;
+count=0;
+%   subplot(5,5,[1:5]);
+%   imshow(i);title('QUERY IMAGE');
+
+while(temp >=97.0 && ii<=cnt_disp)
+%         temp=100-(B(ii);
+          temp=100-(B1(ii)/10000);
+%         temp=((100*(1.0e+004))-(B(ii)));
+          ii = ii +1;
+          count=count+1;
+   end
+   totalfignum = ceil(count/25);
+   xx=1;
+   ii=1;
+   while(xx <= totalfignum)
+       while(ij<=20 && ii<=count)
+        name=strcat(int2str(IX1(ii)),'.jpg');
+        figure(fignum),subplot(5,5,ij+5)
+        imshow(name);
+%       temp=100-(B(ii)-B(1));
+       % temp=(100*(1.0e+004))-(B(ii)-B(1));
+%          title(['Dist= ',num2str(B(ii)/10000),'  Ind= ',num2str(IX(ii))],'Color','B')
+         title(['Ind= ',num2str(IX1(ii))],'Color','B');
+%         display(ii);
+        ij=ij+1;
+        ii=ii+1;
+       end
+       ij=1;
+       fignum=fignum+1;
+       xx=xx+1;
+       
+       
+   end
+    
+     elseif strcmp(selection,'No')
+            
+         
+%end
+break;
+disp('done');
+     end
+        i11=i11+1;
+        
+     end
+
+% --- Executes on button press in pushbutton13.
+function pushbutton13_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global B;
+global IX;
+global B1;
+global IX1;
+global B_ref;
+global IX_ref;
+
+global x;
+global l1;
+global l2;
+global l3;
+global l4;
+global l5;
+global i11;
+global l;
+global n;
+% final log based logic started
+% disp('8888888888888888888888888888888888888888888888888888888')
+
+  % final log output
+ %t1_log=log(l1);
+  %t2_log=log(l2);
+  %t3_log=log(l3);
+  %t4_log=log(l4);
+ % t5_log=log(l5);
+  
+ % t1_s=sort(t1_log);
+ % t2_s=sort(t2_log);
+ % t3_s=sort(t3_log);
+ % t4_s=sort(t4_log);
+  %t5_s=sort(t5_log);
+  %t1_s1=sort(l1);
+  %t2_s1=sort(l2);
+  %t3_s1=sort(l3);
+  %t4_s1=sort(l4);
+  %t5_s1=sort(l5);
+
+  %a=[t1_s;t2_s;t3_s;t4_s;t5_s];
+ % a1=[t1_s1;t2_s1;t3_s1;t4_s1;t5_s1];t1_log=log(l1);
+  %t2_log=log(l2);
+ % t3_log=log(l3);
+  %t4_log=log(l4);
+  %t5_log=log(l5);
+  
+  %t1_s=sort(t1_log);
+  %t2_s=sort(t2_log);
+  %t3_s=sort(t3_log);
+  %t4_s=sort(t4_log);
+  %t5_s=sort(t5_log);
+  %t1_s1=sort(l1);
+  %t2_s1=sort(l2);
+ % t3_s1=sort(l3);
+ % t4_s1=sort(l4);
+  %t5_s1=sort(l5);
+
+ % a=[t1_s;t2_s;t3_s;t4_s;t5_s];
+ % a1=[t1_s1;t2_s1;t3_s1;t4_s1;t5_s1]; t1_log=log(l1);
+  
+  for i=1:i11-1
+    t_log(i,:)=log(l(i,:));
+    t_in(i,:)=sort(l(i,:));
+    t_s(i,:)=sort(t_log(i,:));
+end
+  a=t_s;
+a1=t_in;
+%   a=[t1_s;t2_s;t3_s;t1_s;t2_s;t3_s];%;t1_s;t2_s;t3_s;t1_s;t2_s;t3_s];
+  cnt=1;
+  [m n]=size(a);
+  len=m;
+  flag_cnt=[];
+for i=1:len-1
+    for j=1:n
+      if a(i,j)==a(i+1,j)
+          flag_cnt(cnt)=a(i,j);
+           flag_id(cnt)=a1(i,j);
+           cnt=cnt+1
+%       else
+%           flag_cnt(cnt)=a(i,j);
+%            flag_id(cnt)=a1(i,j);
+      end
+    end
+end
+
+if isempty(flag_cnt)
+    flag_cnt = B_ref;
+    flag_id = IX_ref;
+end
+%flg=zeros(20,20);
+%for i=1:5
+ %   for j=1:20
+  %      if flg(i,j)==0
+   %         for k=1:5
+    %            if k~=i 
+     %               for l=1:20
+      %                if flg(k,l)==a[i,j]
+       %                   flg(k,l)==1
+        %                  count=count+1
+         %             end
+          %            if count>=2
+           %               flag_cnt(cnt)=a(i,j);
+          %flag_id(cnt)=a1(i,j);
+           %cnt=cnt+1   
+            %          end
+             %       end
+              %  end
+            %end
+        %end
+    %end
+%end 
+  final_cnt = sort(flag_cnt);
+  flag_id = sort(flag_id);
+  [m n]=size(final_cnt);
+  cnt=1;
+  f_id=[];
+for i=1:n-1
+    if final_cnt(i)~=final_cnt(i+1)       
+        f_sort(cnt)=final_cnt(i);
+        f_id(cnt)=flag_id(i);
+        cnt=cnt+1;
+    end
+end
+% f_sort
+ f_id
+ tm=sort(l1);
+ flag=0;
+%  if length(f_id)==0
+%      
+%      
+%  end
+ if length(f_id)<=20 
+    for i=1:20
+        for j=1:length(f_id)
+        if f_id(j)~=tm(i)
+            flag=1;
+        else
+            flag=0;
+            break;
+        end
+        end
+        if flag==1 
+            f_id(cnt)=tm(i);
+            cnt=cnt+1;
+            if length(f_id)>=20
+                break;
+            end  
+        end
+    end
+ end  
+        %else
+            %f_id(cnt)=tm(i);
+            %cnt=cnt+1;
+            %if cnt>=20
+               % break;
+           % end           
+
+        %end
+    %end
+%end
+%end
+%if length(f_id)<=20
+ %   for i=1:20
+   %     if f_id(i)~=tm(i)
+  %          f_id(cnt)=tm(i);
+    %        cnt=cnt+1;
+     %       if cnt>=20
+      %          break;
+       %     end           
+        %else
+         %   f_id(cnt)=tm(i);
+          %  cnt=cnt+1;
+           % if cnt>=20
+            %    break;
+            %end           
+
+        %end
+    %end
+%end
+        
+f_id
+      
+%  ------------------------------------This code gives top  similar images 
+temp=100.0;
+ii=1;
+ij=1;
+if length(f_id)<=20
+    count=length(f_id);
+else
+    count=20;
+end
+% figure(fignum)
+% subplot(5,5,[1:5]);
+% imshow(ref_i);title('QUERY IMAGE');
+% 
+% %   subplot(5,5,[1:5]);
+% %   imshow(i);title('QUERY IMAGE');
+% % final sorted result
+% IX1 = f_id;
+%    xx=1;
+%    ii=1;
+%    while(xx <= totalfignum)
+%        while(ij<=20 && ii<=count)
+%         name=strcat(int2str(IX1(ii)),'.jpg');
+%         figure(fignum),subplot(5,5,ij+5)
+%         imshow(name);
+%          title(['Ind= ',num2str(IX1(ii))],'Color','B');
+% %         display(ii);
+%         ij=ij+1;
+%         ii=ii+1;
+%        end
+%        ij=1;
+%        fignum=fignum+1;
+%        xx=xx+1;
+%    end
+%   
+% close 
+% featureext;
+
+set(handles.axes1, 'Visible', 'on');
+% figure,
+subplot(5,5,[1:5]);
+  subimage(x);title('QUERY IMAGE');
+
+%         B1 = B(1:20);
+        IX1 = f_id;
+
+%  ------------------------------------This code gives top  similar images 
+   temp=100.0;
+   ii=1;
+   ij=1;
+%    fignum=1;
+%    count=0;
+%    while(temp >=threshold && ii<=20)
+%           temp=100-(B1(ii)/10000);
+%           ii = ii +1;
+%           count=count+1;
+%    end
+   totalfignum = ceil(count/25);
+   xx=1;
+   ii=1;
+   while(xx <= totalfignum)
+       while(ij<=20 && ii<=count)
+            name=strcat(int2str(IX1(ii)),'.jpg');
+            subplot(5,5,ij+5)
+            in_tmp = imread(name); % read the image
+            handles.axes1 = subimage(in_tmp);
+            axis off;
+            title([' Ind= ',num2str(IX1(ii))],'Color','B')
+            ij=ij+1;
+            ii=ii+1;
+       end
+       ij=1;
+       xx=xx+1;
+   end
+   handles.axes1 = in_tmp;
+
+%    axes(handles.axes1);
+%     set(handles.axes1,'XMinorTick','on')
+
+
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+
+
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+
+
+function edit3_Callback(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit3 as text
+%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton15.
+function pushbutton15_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton15 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+% --- Executes on button press in pushbutton16.
+function pushbutton16_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton16 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+global selection;
+
+
+selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
+                     ['Close ' get(handles.figure1,'Name') '...'],...
+                     'Yes','No','Yes');
+if strcmp(selection,'Yes')
+   delete(handles.figure1);
+   close all;
+   clc;
+   clear all;
+end
+
+return;
